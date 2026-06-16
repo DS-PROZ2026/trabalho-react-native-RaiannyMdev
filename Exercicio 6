@@ -226,6 +226,7 @@ export default function AppQuiz() {
       </View>
 
       <View style={styles.cartaoPergunta}>
+        <Image
           source={{ uri: pergunta.imagem }}
           style={styles.imagemPergunta}
         />
