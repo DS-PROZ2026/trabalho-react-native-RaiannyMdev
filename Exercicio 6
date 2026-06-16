@@ -1,0 +1,395 @@
+import React, { useState } from 'react';
+// 1. IMPORTAMOS O COMPONENTE IMAGE AQUI:
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  ActivityIndicator,
+  StyleSheet,
+  Image,
+  ImageBackground,
+} from 'react-native';
+const QUIZ = [
+  {
+    id: 1,
+    imagem:
+      'https://i.pinimg.com/736x/26/57/fd/2657fd296f0d71c2f59c2d8504585456.jpg',
+    pergunta: 'Quem tem waffles como comida favorita?',
+    opcoes: ['Max Mayfield', 'Dustin', 'Eleven', 'Holly Wheeler'],
+    respostaCerta: 2,
+  },
+  {
+    id: 2,
+    imagem:
+      'https://i.pinimg.com/736x/2b/47/e0/2b47e07e6a0d3fa50d3d0beb70ac9f18.jpg',
+    pergunta: 'Quem perdeu a ultima partidaa de D&D no EP01?',
+    opcoes: ['Will', 'Luccas', 'Mike', 'Dustin'],
+    respostaCerta: 0,
+  },
+  {
+    id: 3,
+    imagem:
+      'https://i.pinimg.com/736x/7b/2f/61/7b2f61fc43a5db4ca8a2ebfe228044ee.jpg',
+    pergunta:
+      'Quem descobriu que o corpo encontrado no lago não era realmente o de Will Byers?',
+    opcoes: ['Jonathan Byers', 'Nancy Wheeler', 'Hopper', 'Joyce Byers'],
+    respostaCerta: 2,
+  },
+  {
+    id: 4,
+    imagem:
+      'https://i.pinimg.com/736x/60/85/20/608520646626eb9210f2fd119a912c3e.jpg',
+    pergunta:
+      'Segundo o Professor de ciência dos meninos, a existência do Mundo Invertido seria comparavel a qual teoria científica?',
+    opcoes: [
+      'Teoria da Relatividae',
+      'Teoria do Caos',
+      'Teoria das Dimensões Paralelas(Vale das Sombras)',
+      'Teoria do Big bang',
+    ],
+    respostaCerta: 2,
+  },
+  {
+    id: 5,
+    imagem:
+      'https://i.pinimg.com/736x/8c/c4/4b/8cc44bdbf20fac1cc3ccf85ee7cd61f8.jpg',
+    pergunta: 'Qual é o nome do clube liderado por Eddie Munson?',
+    opcoes: ['Dungeon Masters', 'Dragons lair', 'Hells Club', 'Hellfire Club'],
+    respostaCerta: 3,
+  },
+  {
+    id: 6,
+    imagem:
+      'https://i.pinimg.com/736x/c0/db/78/c0db786c255a8f01018eff7dafd2d7df.jpg',
+    pergunta:
+      'O que o Will desenhou compulsivamente após retornar do Mundo Invertido?',
+    opcoes: ['Retratos da familia','Monstros desconhecidos','Mapas de Hawkins','Túneis e o Devorador de Mentes',],
+    respostaCerta: 3,
+  },
+  {
+    id: 7,
+    imagem:
+      'https://i.pinimg.com/736x/7d/44/9b/7d449bb2fdfe309f2ce40b0081cd9865.jpg',
+    pergunta:
+      'Onde Holly e sua mãe se esconderam do Demorgorgon durante a invasão a casa dos Wheeler?',
+    opcoes: ['No porão', 'No quarto de Nancy', 'Na banheira', 'No armario'],
+    respostaCerta: 2,
+  },
+  {
+    id: 8,
+    imagem:
+      'https://i.pinimg.com/736x/8b/20/c9/8b20c9ca7904ac057d85c4b8506b935a.jpg',
+    pergunta:
+      'Quem foi a Primeira pessoa a perceber que Will estava se comunicando através das luzes?',
+    opcoes: ['Jonathan', 'Eleven', 'Mike', 'Joyce'],
+    respostaCerta: 3,
+  },
+  {
+    id: 9,
+    imagem:
+      'https://i.pinimg.com/736x/b3/42/20/b3422019b0def9de6d4b09c74f05a6d8.jpg',
+    pergunta:
+      'Qual o nome do projeto conduzido pelo Dr.Brenner envolvendo crianças com poderes?',
+    opcoes: ['Projeto hawkins', 'MKUltra', 'Projeto Nina', 'Rainbow'],
+    respostaCerta: 1,
+  },
+  {
+    id: 10,
+    imagem:
+      'https://i.pinimg.com/736x/9e/34/0e/9e340ebb4adc68fe61d214de244a1182.jpg',
+    pergunta: 'O que Nancy vê repetidamente antes dos ataques finais de Vecna?',
+    opcoes: [
+      'A cidade destruida',
+      'Sua familia morta',
+      'O relógio do avô(GrandfatherClock',
+      'Billy no Starcourt',
+    ],
+    respostaCerta: 2,
+  },
+];
+export default function AppQuiz() {
+  const [telaAtual, setTelaAtual] = useState('inicio');
+  const [perguntaAtual, setPerguntaAtual] = useState(0);
+  const [pontuacao, setPontuacao] = useState(0);
+  const [carregando, setCarregando] = useState(false);
+  const [respostaSelecionada, setRespostaSelecionada] = useState(null);
+  const [botoesBloqueados, setBotoesBloqueados] = useState(false);
+
+  function iniciarJogo() {
+    setPerguntaAtual(0);
+    setPontuacao(0);
+    setTelaAtual('quiz');
+  }
+
+  function voltarAoInicio() {
+    setTelaAtual('inicio');
+  }
+
+  function responder(indiceClicado) {
+    setRespostaSelecionada(indiceClicado);
+    setBotoesBloqueados(true);
+
+    setTimeout(() => {
+      setCarregando(true);
+      const pergunta = QUIZ[perguntaAtual];
+
+      if (indiceClicado === pergunta.respostaCerta) {
+        setPontuacao(pontuacao + 1);
+      }
+
+      if (perguntaAtual + 1 < QUIZ.length) {
+        setPerguntaAtual(perguntaAtual + 1);
+      } else {
+        setTelaAtual('resultado');
+      }
+
+      setRespostaSelecionada(null);
+      setBotoesBloqueados(false);
+      setCarregando(false);
+    }, 1000);
+  }
+
+  // ==========================================
+  // AS TELAS
+  // ==========================================
+
+  if (telaAtual === 'inicio') {
+    return (
+      <ImageBackground
+        source={{
+          uri: 'https://i.pinimg.com/736x/32/e1/15/32e11576a2a26f27ed21ad15a8b048f7.jpg',
+        }}
+        style={styles.telaCentrada}
+        resizeMode="cover">
+        <View style={styles.telaCentrada}>
+          Image>
+          {/* 2. EXEMPLO PRÁTICO DE IMAGEM: */}
+          {/* Repare nas chaves duplas {{ }} usadas para passar o link da internet */}
+          <Image
+            source={{
+              uri: 'https://i.pinimg.com/736x/66/87/b6/6687b6771014cf4608c4665514ecf4c6.jpg',
+            }}
+            style={styles.logoInicial}
+          />
+          <Text style={styles.tituloPrincipal}>QUIZ</Text>
+          <Text style={styles.subtituloInicio}>
+            Teste seus conhecimentos. Prove que você é um verdadeiro fã!
+          </Text>
+          <TouchableOpacity
+            style={styles.botaoIniciar}
+            onPress={iniciarJogo}
+            activeOpacity={0.8}>
+            <Text style={styles.textoBotaoIniciar}>INICIAR JOGO</Text>
+          </TouchableOpacity>
+        </View>
+      </ImageBackground>
+    );
+  }
+
+  if (telaAtual === 'resultado') {
+    return (
+      <View style={styles.telaCentrada}>
+        <Text style={styles.iconeGrande}> </Text>
+        <Text style={styles.titulo}>Fim de Jogo!</Text>
+        <Text style={styles.subtitulo}>
+          Você acertou {pontuacao} de {QUIZ.length}
+          perguntas.
+        </Text>
+
+        <TouchableOpacity
+          style={styles.botaoAcao}
+          onPress={voltarAoInicio}
+          activeOpacity={0.8}>
+          <Text style={styles.textoBotaoAcao}>Voltar ao Início</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  }
+  if (carregando) {
+    return (
+      <View style={styles.telaCentrada}>
+        <ActivityIndicator size="large" color="#3b82f6" />
+        <Text style={styles.textoCarregando}>Validando resposta...</Text>
+      </View>
+    );
+  }
+
+  const pergunta = QUIZ[perguntaAtual];
+
+  return (
+    <ImageBackground source={{ uri: 'https://i.pinimg.com/736x/32/e1/15/32e11576a2a26f27ed21ad15a8b048f7.jpg' }} style={styles.tela}>
+      <View style={styles.cabecalho}>
+        <Text style={styles.progresso}>
+          Pergunta {perguntaAtual + 1} de {QUIZ.length}
+        </Text>{' '}
+        <Text style={styles.pontos}>Pontos: {pontuacao}</Text>
+      </View>
+
+      <View style={styles.cartaoPergunta}>
+          source={{ uri: pergunta.imagem }}
+          style={styles.imagemPergunta}
+        />
+        <Text style={styles.textoPergunta}>{pergunta.pergunta}</Text>
+      </View>
+
+      <View style={styles.areaOpcoes}>
+        {pergunta.opcoes.map((opcao, index) => (
+          <TouchableOpacity
+            key={index}
+            style={[
+              styles.botaoOpcao,
+              respostaSelecionada === index &&
+                index === pergunta.respostaCerta && {
+                  backgroundColor: '#16a34a',
+                  borderColor: '#16a34a',
+                },
+              respostaSelecionada === index &&
+                index !== pergunta.respostaCerta && {
+                  backgroundColor: '#dc2626',
+                  borderColor: '#dc2626',
+                },
+            ]}
+            onPress={() => responder(index)}
+            activeOpacity={0.7}
+            disabled={botoesBloqueados}>
+            <Text style={styles.textoOpcao}>{opcao}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </ImageBackground>
+  );
+}
+
+// ==========================================
+// ESTILOS
+// ==========================================
+const styles = StyleSheet.create({
+  tela: { flex: 1, backgroundColor: '#0B0B0F', padding: 20, paddingTop: 60 },
+  telaCentrada: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  // 3. ESTILO DA IMAGEM
+  logoInicial: {
+    width: 330,
+    height: 180,
+    marginBottom: 40,
+    borderRadius: 20,
+    borderWidth: 0.5,
+    borderColor: '#FF0D0D',
+    shadowOpacity: 1.5,
+    shadowColor: '#10b981',
+  },
+  imagemPergunta: {
+    width: '100%',
+    height: 150,
+    borderRadius: 15,
+    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: '#FF0D0D',
+  },
+  tituloPrincipal: {
+    fontSize: 40,
+    fontWeight: '900',
+    color: '#FF0D0D',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  subtituloInicio: {
+    fontSize: 16,
+    color: '#F5F5E7',
+    marginBottom: 50,
+    textAlign: 'center',
+    paddingHorizontal: 20,
+  },
+  botaoIniciar: {
+    backgroundColor: '#FF0D0D',
+    paddingVertical: 20,
+    paddingHorizontal: 40,
+    borderRadius: 20,
+    width: '100%',
+    maxWidth: 300,
+    shadowColor: '#10b981',
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
+    elevation: 8,
+    alignItems: 'center',
+  },
+  textoBotaoIniciar: {
+    color: 'white',
+    fontSize: 20,
+    fontWeight: '900',
+    letterSpacing: 1,
+  },
+
+  cabecalho: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+    paddingHorizontal: 10,
+  },
+  progresso: { fontSize: 16, fontWeight: '700', color: '#FF0D0D' },
+  pontos: { fontSize: 16, fontWeight: '800', color: '#FF0D0D' },
+  cartaoPergunta: {
+    backgroundColor: '#1C1F2A',
+    padding: 30,
+    borderRadius: 20,
+    borderWidth: 2,
+    borderColor: '#B62425',
+    marginBottom: 30,
+    shadowColor: '',
+    shadowOpacity: 0.05,
+    shadowRadius: 15,
+    elevation: 5,
+    minHeight: 150,
+    justifyContent: 'center',
+  },
+  textoPergunta: {
+    fontSize: 22,
+    fontWeight: '800',
+    color: '#F5F5E7',
+    textAlign: 'center',
+    lineHeight: 30,
+  },
+  areaOpcoes: { flex: 1 },
+  botaoOpcao: {
+    backgroundColor: '#1C1F2A',
+    padding: 20,
+    borderRadius: 15,
+    marginBottom: 15,
+    borderWidth: 2,
+    borderColor: '#B62425',
+  },
+  textoOpcao: {
+    fontSize: 18,
+    color: '#F5F5E7',
+    fontWeight: '600',
+    textAlign: 'center',
+  },
+  iconeGrande: { fontSize: 80, marginBottom: 20 },
+  titulo: {
+    fontSize: 32,
+    fontWeight: '900',
+    color: '#FF0D0D',
+    marginBottom: 10,
+  },
+  subtitulo: { fontSize: 18, color: '#F5F5E7', marginBottom: 40 },
+  botaoAcao: {
+    backgroundColor: '#FF0D0D',
+    paddingVertical: 18,
+    paddingHorizontal: 40,
+    borderRadius: 16,
+    width: '100%',
+    maxWidth: 300,
+    alignItems: 'center',
+  },
+  textoBotaoAcao: { color: '#F5F5E7', fontSize: 18, fontWeight: '800' },
+  textoCarregando: {
+    marginTop: 20,
+    fontSize: 18,
+    fontWeight: '600',
+    color: '#F5F5E7',
+  },
+});
